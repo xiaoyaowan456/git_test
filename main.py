@@ -22,7 +22,7 @@ manager.add_command('db', MigrateCommand)
 @app.route('/')
 def home():
     '''首页'''
-    return 'hello'
+    return 'hello world'
 
 
 if __name__ == '__main__':
