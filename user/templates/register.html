@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+<!-- 填充 content -->
+{% block content %}
+
+{# 处理错误信息 #}
+{% if err %}
+    <div>{{ err }}</div>
+{% endif %}
+
+    <form action="/user/register" method="POST" enctype="multipart/form-data">
+        昵称 <input type="text" name="nikename" />
+        <br />
+        密码 <input type="password" name="password1" />
+        <br />
+        确认密码 <input type="password" name="password2" />
+        <br />
+        性别
+        <br/>
+        男<input type="radio" name="gender" value="male"/><br />
+        女<input type="radio" name="gender" value="female"/><br />
+        保密<input type="radio" name="gender" value="unknow" checked/>
+        <br />
+        生日 <input type="date" name="birthday" min="1960-01-01" max="2000-01-01" />
+        <br />
+        城市 <input type="text" name="city" />
+        <br />
+        头像 <input type="file" name="avatar" />
+        <br />
+        简介 <textarea name="bio" rows="5"></textarea>
+        <br />
+{#        <input type="submit" />   这种形式也可以 或者用如下#}
+        <button>点击注册</button>
+    </form>
+
+{% endblock %}
