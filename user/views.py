@@ -5,6 +5,7 @@ from flask import request
 from flask import redirect
 from flask import session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import NoResultFound
 from flask import render_template
 
 from libs.orm import db
@@ -12,6 +13,9 @@ from libs.utils import make_password
 from libs.utils import check_password
 from libs.utils import save_avatar
 from user.models import User
+from libs.utils import login_required
+
+
 
 
 user_bp = Blueprint(
@@ -73,12 +77,40 @@ def register():
 
 @user_bp.route('/login', methods=('POST', 'GET'))
 def login():
-    return render_template('login.html')
+    if request.method == 'POST':
+        nickname = request.form.get('nickname', '').strip()
+        password = request.form.get('password', '').strip()
+
+        #获取用户
+        try:
+            user = User.query.filter_by(nickname=nickname).one()
+        except NoResultFound:
+            return render_template('login.html', err='该用户不存在')
+        # 检查密码
+        if check_password(password, user.password):
+            #在 Session 中记录用户登录的状态
+            session['uid'] = user.id
+            session['nickname'] = user.nickname
+            return redirect('/user/info')
+        else:
+            return render_template('login.html', err='密码错误')
+    else:
+        return render_template('login.html')
 
 @user_bp.route('/logout')
 def logout():
+    '''退出功能'''
+    # 方法一
+    # session.pop('uid')
+    # session.pop('nickname')
+    # 方法二  彻底清空退出
+    session.clear()
     return redirect('/')
 
 @user_bp.route('/info')
+@login_required
 def info():
-    return render_template('info.html')
+    '''查看用户信息'''
+    uid = session['uid']
+    user = User.query.get(uid)
+    return render_template('info.html', user=user)

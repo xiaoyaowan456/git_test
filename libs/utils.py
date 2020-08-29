@@ -1,6 +1,9 @@
 from hashlib import md5, sha256
 import os
 
+from flask import session
+from flask import redirect
+
 def make_password(password):
     '''产生一个安全密码'''
     if not isinstance(password, bytes):
@@ -60,3 +63,15 @@ def save_avatar(avatar_file):
     avatar_url =  f'/static/upload/{filename}'
 
     return avatar_url
+
+
+def login_required(view_func):
+    def check_session(*args, **kwargs):
+        uid = session.get('uid')
+        if not uid:
+            return redirect('/user/login')
+        else:
+            return view_func(*args, **kwargs)
+
+    return check_session
+ 

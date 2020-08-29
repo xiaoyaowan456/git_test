@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{# 填充 content #}
+{% block content %}
+<h1>{{ user.nikename }} 您好</h1>
+
+<hr />
+
+    <img src="{{ user.avatar }}" width="200px" />
+
+    <ul>
+    {% if user.gender == 'male' %}
+        <li>性别：小哥哥</li>
+    {% elif user.gender == 'female' %}
+        <li>性别：小姐姐</li>
+    {% else %}
+        <li>性别：保密</li>
+        <li>生日：{{ user.birthday }}</li>
+        <li>城市：{{ user.city }}</li>
+        <li>简介：{{ user.bio }}</li>
+        <li>注册时间：{{ user.created }}</li>
+    </ul>
+
+{% endblock %}
